@@ -2,21 +2,23 @@ import os
 from dotenv import load_dotenv
 
 # Load environment variables from .env file for local command-line runs
-load_dotenv()
+load_dotenv(override=True)
 
 # Strategy Pattern Configuration or standard environment variable lookup
 def get_config(key: str, default: str = "") -> str:
     """
-    Retrieve configuration value, prioritizing Streamlit secrets if available,
+    Retrieve configuration value, prioritizing Streamlit secrets if available and not empty,
     otherwise falling back to environment variables.
     """
     try:
         import streamlit as st
-        if hasattr(st, "secrets") and key in st.secrets:
+        if hasattr(st, "secrets") and key in st.secrets and st.secrets[key]:
             return str(st.secrets[key])
     except ImportError:
         pass
     
+    # Reload dotenv to override any empty values injected into os.environ by streamlit import
+    load_dotenv(override=True)
     return os.getenv(key, default)
 
 LLM_PROVIDER = get_config("LLM_PROVIDER", "mistral")

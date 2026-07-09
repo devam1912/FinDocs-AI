@@ -9,12 +9,19 @@ try:
     from src.llm_strategy import get_llm_provider
     from src.retrieval import retrieve_documents
     from src.structured_query import answer_structured_query
+    from src.observer import AgentSubject, FileLoggingObserver, SQLiteLoggingObserver
 except ImportError:
     # Handle direct script executions
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     from src.llm_strategy import get_llm_provider
     from src.retrieval import retrieve_documents
     from src.structured_query import answer_structured_query
+    from src.observer import AgentSubject, FileLoggingObserver, SQLiteLoggingObserver
+
+# Initialize Subject and attach default logging observers
+agent_dispatcher = AgentSubject()
+agent_dispatcher.attach(FileLoggingObserver())
+agent_dispatcher.attach(SQLiteLoggingObserver())
 
 class QueryContext:
     """Context object passed through the Chain of Responsibility pipeline."""
@@ -172,6 +179,10 @@ def run_agent(query: str) -> QueryContext:
     
     # Calculate overall latency
     context.metadata["total_latency"] = time.time() - context.metadata["start_time"]
+    
+    # Notify logging observers
+    agent_dispatcher.notify(context)
+    
     return context
 
 def main():

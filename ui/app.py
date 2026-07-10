@@ -178,6 +178,27 @@ with st.sidebar:
     else:
         st.caption("No statements ingested yet.")
         
+    # Ingestion Uploader Widget
+    st.markdown("---")
+    st.markdown("### 📥 Ingest New Statement")
+    uploaded_file = st.file_uploader("Upload PDF or CSV bank statement", type=["csv", "pdf"])
+    if uploaded_file is not None:
+        if st.button("Process & Ingest File", use_container_width=True):
+            with st.spinner("Parsing and indexing statement..."):
+                try:
+                    os.makedirs("data", exist_ok=True)
+                    save_path = os.path.join("data", uploaded_file.name)
+                    with open(save_path, "wb") as f:
+                        f.write(uploaded_file.getbuffer())
+                        
+                    from src.ingestion import run_ingestion_pipeline
+                    run_ingestion_pipeline()
+                    
+                    st.success(f"Successfully ingested {uploaded_file.name}!")
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Ingestion failed: {e}")
+        
     # Voice features setup
     st.markdown("---")
     st.markdown("### 🎙️ Voice Features")

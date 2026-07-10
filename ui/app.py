@@ -24,94 +24,170 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. Premium CSS Custom Styling Injection
 st.markdown("""
 <style>
-    /* Global Styles */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@400;600;700&display=swap');
+    /* Global Overrides & Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap');
     
+    /* Clean custom background override */
+    .stApp {
+        background-color: #F8FAFC !important;
+    }
+    
+    /* Hide Streamlit default decor & headers */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    div[data-testid="stDecoration"] {display: none !important;}
+    div[data-testid="stToolbar"] {display: none !important;}
+    
+    /* Document margins */
+    .block-container {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+        max-width: 1200px !important;
+    }
+    
+    /* Typographies */
     html, body, [class*="css"] {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     
     .main-title {
         font-family: 'Outfit', sans-serif;
-        font-size: 2.8rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+        font-size: 2.5rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 0.2rem;
+        margin-bottom: 0.1rem;
     }
     
     .subtitle {
-        font-size: 1.1rem;
-        color: #4A5568;
+        font-size: 1rem;
+        color: #64748B;
+        font-weight: 400;
         margin-bottom: 2rem;
     }
     
-    /* Card Styles */
+    /* Sidebar premium panel */
+    section[data-testid="stSidebar"] {
+        background-color: #0F172A !important;  /* Deep Slate */
+        border-right: 1px solid #1E293B !important;
+    }
+    
+    section[data-testid="stSidebar"] .sidebar-header {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #F8FAFC !important;
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.01em;
+    }
+    
+    section[data-testid="stSidebar"] h3 {
+        color: #94A3B8 !important;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-top: 1.5rem;
+    }
+    
+    section[data-testid="stSidebar"] span, section[data-testid="stSidebar"] label {
+        color: #E2E8F0 !important;
+    }
+    
+    /* Metric Cards */
     .metric-card {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(226, 232, 240, 0.8);
-        border-radius: 12px;
-        padding: 1.2rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        margin-bottom: 1rem;
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
+        padding: 1.1rem 1.2rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+        margin-bottom: 0.8rem;
     }
     
     .metric-value {
-        font-size: 1.8rem;
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.6rem;
         font-weight: 700;
-        color: #1A365D;
+        color: #0F172A;
     }
     
     .metric-label {
-        font-size: 0.85rem;
-        color: #718096;
+        font-size: 0.75rem;
+        color: #64748B;
         text-transform: uppercase;
         font-weight: 600;
+        letter-spacing: 0.04em;
     }
     
-    /* Chat Customizations */
-    .stChatMessage {
-        border-radius: 12px;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 2px 4px 0 rgba(0,0,0,0.02);
+    /* Custom Quick Queries buttons as SaaS Chips */
+    div[data-testid="stButton"] button {
+        background-color: #FFFFFF !important;
+        color: #334155 !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 8px !important;
+        padding: 0.5rem 1rem !important;
+        font-size: 0.85rem !important;
+        font-weight: 500 !important;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
     
-    /* Sidebar styling */
-    .sidebar-header {
-        font-family: 'Outfit', sans-serif;
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #1A365D;
-        margin-bottom: 1.5rem;
+    div[data-testid="stButton"] button:hover {
+        background-color: #F8FAFC !important;
+        color: #2563EB !important;
+        border-color: #2563EB !important;
+        transform: translateY(-1px);
+    }
+    
+    /* Chat inputs */
+    div[data-testid="stChatInput"] {
+        border-radius: 10px !important;
+    }
+    
+    /* Chat bubbles custom styling */
+    div[data-testid="stChatMessage"] {
+        background-color: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 12px !important;
+        padding: 1.1rem !important;
+        margin-bottom: 0.9rem !important;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02) !important;
+    }
+    
+    /* Distinguish User message bubble */
+    div[data-testid="stChatMessage"][data-testid="chatMessage-user"] {
+        background-color: #F1F5F9 !important;
+        border-color: #E2E8F0 !important;
     }
     
     /* Pipeline Details styling */
     .pipeline-badge {
-        background-color: #EBF8FF;
-        color: #2B6CB0;
-        padding: 0.2rem 0.6rem;
+        background-color: #F8FAFC;
+        color: #475569;
+        border: 1px solid #E2E8F0;
+        padding: 0.2rem 0.5rem;
         border-radius: 6px;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         font-weight: 600;
         display: inline-block;
-        margin-right: 0.5rem;
+        margin-right: 0.4rem;
     }
     
     .pipeline-badge-sql {
-        background-color: #F0FFF4;
-        color: #2F855A;
+        background-color: #ECFDF5;
+        color: #047857;
+        border-color: #A7F3D0;
     }
     
     .pipeline-badge-rag {
-        background-color: #FAF5FF;
-        color: #6B46C1;
+        background-color: #F5F3FF;
+        color: #6D28D9;
+        border-color: #DDD6FE;
     }
 </style>
 """, unsafe_allow_html=True)

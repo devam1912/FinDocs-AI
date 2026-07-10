@@ -29,9 +29,20 @@ st.markdown("""
     /* Global Overrides & Fonts */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap');
     
-    /* Clean custom background override */
+    /* Clean custom dark background override */
     .stApp {
-        background-color: #F8FAFC !important;
+        background-color: #0B0F19 !important;
+    }
+    
+    /* Force all standard texts and headers to be light slate */
+    .stApp, .stApp p, .stApp span, .stApp label, .stApp li, .stApp div {
+        color: #E2E8F0 !important;
+    }
+    
+    /* Heading styling */
+    .stApp h1, .stApp h2, .stApp h3, .stApp h4 {
+        color: #F8FAFC !important;
+        font-family: 'Outfit', sans-serif !important;
     }
     
     /* Hide Streamlit default decor & headers */
@@ -58,22 +69,22 @@ st.markdown("""
         font-size: 2.5rem;
         font-weight: 800;
         letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        background: linear-gradient(135deg, #38BDF8 0%, #2563EB 100%) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
         margin-bottom: 0.1rem;
     }
     
     .subtitle {
         font-size: 1rem;
-        color: #64748B;
+        color: #94A3B8 !important;
         font-weight: 400;
         margin-bottom: 2rem;
     }
     
     /* Sidebar premium panel */
     section[data-testid="stSidebar"] {
-        background-color: #0F172A !important;  /* Deep Slate */
+        background-color: #070A13 !important;  /* Dark Slate */
         border-right: 1px solid #1E293B !important;
     }
     
@@ -87,7 +98,7 @@ st.markdown("""
     }
     
     section[data-testid="stSidebar"] h3 {
-        color: #94A3B8 !important;
+        color: #64748B !important;
         font-size: 0.85rem;
         font-weight: 700;
         text-transform: uppercase;
@@ -95,17 +106,17 @@ st.markdown("""
         margin-top: 1.5rem;
     }
     
-    section[data-testid="stSidebar"] span, section[data-testid="stSidebar"] label {
-        color: #E2E8F0 !important;
+    section[data-testid="stSidebar"] span, section[data-testid="stSidebar"] label, section[data-testid="stSidebar"] p {
+        color: #94A3B8 !important;
     }
     
     /* Metric Cards */
     .metric-card {
-        background: #FFFFFF;
-        border: 1px solid #E2E8F0;
+        background: #111827;  /* Dark card background */
+        border: 1px solid #1F2937;
         border-radius: 10px;
         padding: 1.1rem 1.2rem;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
         margin-bottom: 0.8rem;
     }
     
@@ -113,12 +124,12 @@ st.markdown("""
         font-family: 'Outfit', sans-serif;
         font-size: 1.6rem;
         font-weight: 700;
-        color: #0F172A;
+        color: #38BDF8 !important;  /* Neon cyan text */
     }
     
     .metric-label {
         font-size: 0.75rem;
-        color: #64748B;
+        color: #94A3B8 !important;
         text-transform: uppercase;
         font-weight: 600;
         letter-spacing: 0.04em;
@@ -126,50 +137,53 @@ st.markdown("""
     
     /* Custom Quick Queries buttons as SaaS Chips */
     div[data-testid="stButton"] button {
-        background-color: #FFFFFF !important;
-        color: #334155 !important;
-        border: 1px solid #E2E8F0 !important;
+        background-color: #111827 !important;
+        color: #E2E8F0 !important;
+        border: 1px solid #1F2937 !important;
         border-radius: 8px !important;
         padding: 0.5rem 1rem !important;
         font-size: 0.85rem !important;
         font-weight: 500 !important;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        transition: all 0.2s ease !important;
     }
     
     div[data-testid="stButton"] button:hover {
-        background-color: #F8FAFC !important;
-        color: #2563EB !important;
-        border-color: #2563EB !important;
+        background-color: #1E293B !important;
+        color: #38BDF8 !important;
+        border-color: #38BDF8 !important;
         transform: translateY(-1px);
     }
     
     /* Chat inputs */
     div[data-testid="stChatInput"] {
         border-radius: 10px !important;
+        background-color: #111827 !important;
+        border: 1px solid #1F2937 !important;
+    }
+    div[data-testid="stChatInput"] textarea {
+        color: #F8FAFC !important;
     }
     
     /* Chat bubbles custom styling */
     div[data-testid="stChatMessage"] {
-        background-color: #FFFFFF !important;
-        border: 1px solid #E2E8F0 !important;
+        background-color: #111827 !important;
+        border: 1px solid #1F2937 !important;
         border-radius: 12px !important;
         padding: 1.1rem !important;
         margin-bottom: 0.9rem !important;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02) !important;
     }
     
     /* Distinguish User message bubble */
     div[data-testid="stChatMessage"][data-testid="chatMessage-user"] {
-        background-color: #F1F5F9 !important;
-        border-color: #E2E8F0 !important;
+        background-color: #1F2937 !important;
+        border-color: #374151 !important;
     }
     
     /* Pipeline Details styling */
     .pipeline-badge {
-        background-color: #F8FAFC;
-        color: #475569;
-        border: 1px solid #E2E8F0;
+        background-color: #111827;
+        color: #94A3B8 !important;
+        border: 1px solid #1F2937;
         padding: 0.2rem 0.5rem;
         border-radius: 6px;
         font-size: 0.75rem;
@@ -179,15 +193,15 @@ st.markdown("""
     }
     
     .pipeline-badge-sql {
-        background-color: #ECFDF5;
-        color: #047857;
-        border-color: #A7F3D0;
+        background-color: #064E3B;
+        color: #34D399 !important;
+        border-color: #047857;
     }
     
     .pipeline-badge-rag {
-        background-color: #F5F3FF;
-        color: #6D28D9;
-        border-color: #DDD6FE;
+        background-color: #3B0764;
+        color: #C084FC !important;
+        border-color: #6D28D9;
     }
 </style>
 """, unsafe_allow_html=True)

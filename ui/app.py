@@ -2,6 +2,8 @@ import os
 import sys
 import sqlite3
 import streamlit as st
+from gtts import gTTS
+import speech_recognition as sr
 
 # Setup python path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -175,6 +177,12 @@ with st.sidebar:
             st.caption(f"📄 {f}")
     else:
         st.caption("No statements ingested yet.")
+        
+    # Voice features setup
+    st.markdown("---")
+    st.markdown("### 🎙️ Voice Features")
+    enable_audio_input = st.checkbox("Enable Audio Input", value=False, help="Record your query through your microphone.")
+    enable_audio_output = st.checkbox("Enable Audio Output (TTS)", value=True, help="Synthesize agent responses into spoken text.")
 
 # 5. Main Dashboard Header
 st.markdown('<div class="main-title">💼 FinDocs AI</div>', unsafe_allow_html=True)
@@ -197,7 +205,35 @@ with col4:
     if st.button("💵 TechCorp Payout?", use_container_width=True):
         st.session_state.temp_input = "What was my TechCorp salary in February 2026?"
 
-# 7. Chat History Management
+# 7. Voice Input Recording (STT)
+if enable_audio_input:
+    st.markdown("### 🎙️ Voice Input")
+    recorded_audio = st.audio_input("Record your question")
+    if recorded_audio is not None:
+        audio_key = f"audio_{recorded_audio.size}"
+        if "last_audio_key" not in st.session_state or st.session_state.last_audio_key != audio_key:
+            st.session_state.last_audio_key = audio_key
+            audio_bytes = recorded_audio.read()
+            
+            # Save recorded bytes to scratch directory
+            scratch_dir = "C:/Users/Admin/.gemini/antigravity-ide/brain/eb8b816a-3c06-40e5-a12f-4ee742b3923e/scratch"
+            os.makedirs(scratch_dir, exist_ok=True)
+            temp_audio_path = os.path.join(scratch_dir, "recorded_question.wav")
+            with open(temp_audio_path, "wb") as f:
+                f.write(audio_bytes)
+                
+            # Transcribe audio using SpeechRecognition
+            r = sr.Recognizer()
+            try:
+                with sr.AudioFile(temp_audio_path) as source:
+                    audio_data = r.record(source)
+                transcribed_query = r.recognize_google(audio_data)
+                st.session_state.temp_input = transcribed_query
+                st.toast(f"🎙️ Transcribed: '{transcribed_query}'")
+            except Exception as e:
+                st.error(f"Speech transcription failed: {e}")
+
+# 8. Chat History Management
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -219,6 +255,10 @@ for msg in st.session_state.messages:
                 unsafe_allow_html=True
             )
             
+            # Display TTS audio response if present
+            if "audio_path" in p and p["audio_path"] and os.path.exists(p["audio_path"]):
+                st.audio(p["audio_path"])
+                
             # Tool-specific details expander
             with st.expander("🛠️ Query Execution Details"):
                 if p["intent"] == "STRUCTURED_SQL" and p["tool_result"]:
@@ -280,11 +320,30 @@ if user_query:
                 "latency": 0.0,
                 "tool_result": None
             }
+    # 9. Synthesize Voice Output if enabled
+    if enable_audio_output and answer:
+        try:
+            import time
+            # Clean markdown markers for natural speaking flow
+            clean_text = answer.replace("**", "").replace("*", "").replace("`", "")
+            scratch_dir = "C:/Users/Admin/.gemini/antigravity-ide/brain/eb8b816a-3c06-40e5-a12f-4ee742b3923e/scratch"
+            os.makedirs(scratch_dir, exist_ok=True)
+            tts_filename = f"response_{int(time.time())}.mp3"
+            tts_path = os.path.join(scratch_dir, tts_filename)
+            tts = gTTS(text=clean_text, lang="en")
+            tts.save(tts_path)
+            pipeline_details["audio_path"] = tts_path
+        except Exception as e:
+            print(f"TTS generation failed: {e}")
             
     # Display assistant response
     with st.chat_message("assistant"):
         st.markdown(answer)
         
+        # Autoplay latest audio response if present
+        if "audio_path" in pipeline_details and pipeline_details["audio_path"] and os.path.exists(pipeline_details["audio_path"]):
+            st.audio(pipeline_details["audio_path"], autoplay=True)
+            
         # Setup intent badges
         badge_class = "pipeline-badge-sql" if pipeline_details["intent"] == "STRUCTURED_SQL" else "pipeline-badge-rag"
         st.markdown(

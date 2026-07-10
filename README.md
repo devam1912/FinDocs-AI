@@ -37,23 +37,52 @@ A RAG + Agent + Evals system for querying financial documents (bank statements, 
 
 - `data/`: Raw bank statements and expense reports (PDF/CSV).
 - `db/`: SQLite database storage.
-- `vectorstore/`: Local FAISS or Chroma vector indexes.
-- `src/`: Core Python modules for config, ingestion, retrieval, agent, and logging/observation.
-- `tests/`: Evaluation harness and test scripts.
+- `vectorstore/`: Local FAISS vector index.
+- `logs/`: Local agent interaction logs (ignored by git).
+- `src/`: Core Python modules for config, ingestion, retrieval, structured querying, agent, and logging/observation.
+- `scripts/`: Data generation and evals harness scripts.
+- `tests/`: Unit test suite.
 - `ui/`: Streamlit web interface.
 
 ## Running the Project
 
-- **Generate Mock Data**: (To be implemented)
-- **Run Ingestion**: (To be implemented)
-- **Run Streamlit UI**:
-  ```bash
-  streamlit run ui/app.py
-  ```
-- **Run Evaluations**:
-  ```bash
-  pytest tests/
-  ```
+1. **Generate Mock Data**:
+   ```bash
+   python scripts/generate_mock_data.py
+   ```
 
-## Live Demo
-*Link to Streamlit Community Cloud deployment will be placed here.*
+2. **Run Ingestion Pipeline**:
+   ```bash
+   python src/ingestion.py
+   ```
+
+3. **Run Streamlit Dashboard UI (includes Voice support)**:
+   ```bash
+   streamlit run ui/app.py
+   ```
+
+4. **Run Evaluations Harness**:
+   ```bash
+   python scripts/run_evals.py
+   ```
+
+5. **Run Pytest Suite**:
+   ```bash
+   pytest tests/
+   ```
+
+## 🚀 Streamlit Cloud Deployment
+
+To deploy this application to Streamlit Community Cloud (free tier):
+
+1. Commit and push all changes to your GitHub repository: `https://github.com/devam1912/FinDocs-AI`.
+2. Visit [Streamlit Community Cloud](https://share.streamlit.io/) and log in with your GitHub account.
+3. Click **New app**, select your repository (`devam1912/FinDocs-AI`), branch (`main`), and set the main file path to `ui/app.py`.
+4. Before deploying, click **Advanced settings...** and paste your API keys under **Secrets**:
+   ```toml
+   MISTRAL_API_KEY = "your-mistral-api-key-here"
+   ```
+5. Click **Deploy**. Your app will be live in a couple of minutes!
+
+## 🔗 Live Demo
+* [FinDocs AI Live Deployment](https://findocs-ai.streamlit.app) *(Note: User to replace this with their actual deployed Streamlit Community Cloud URL)*

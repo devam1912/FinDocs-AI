@@ -143,6 +143,16 @@ def get_db_stats():
         print(f"Error loading stats from SQLite: {e}")
     return stats
 
+# Auto-initialize database and vector index on startup if missing
+has_db = os.path.exists(DATABASE_PATH)
+has_vs = os.path.exists(VECTOR_STORE_PATH) or os.path.exists(os.path.join(VECTOR_STORE_PATH, "index.faiss"))
+if not has_db or not has_vs:
+    try:
+        from src.ingestion import run_ingestion_pipeline
+        run_ingestion_pipeline()
+    except Exception as e:
+        print(f"Startup ingestion failed: {e}")
+
 db_stats = get_db_stats()
 
 # 4. Sidebar Layout
